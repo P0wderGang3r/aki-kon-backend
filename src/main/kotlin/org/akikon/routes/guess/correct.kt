@@ -1,7 +1,7 @@
 package org.akikon.routes.guess
 
 import kotlinx.serialization.decodeFromString
-import org.akikon.errors.*
+import org.akikon.responses.*
 import org.akikon.json.GetSession
 import org.akikon.jsonParser
 import org.akikon.models.User
@@ -9,17 +9,17 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
-fun correctGuess(input: String): IError {
+fun correctGuess(input: String): IResponse {
 
     //Извлечение идентификатора пользовательской сессии
     val userInput: GetSession
     try {
         userInput = jsonParser.decodeFromString(input)
     } catch (e: Exception) {
-        return ParseError()
+        return ParseResponse()
     }
 
-    var transactionStatus: IError = DefaultError()
+    var transactionStatus: IResponse = DefaultResponse()
 
     transaction {
         //Получаем идентификатор вопроса
@@ -28,7 +28,7 @@ fun correctGuess(input: String): IError {
             questionIdentifier = it[User.question_id]
         }
         if (questionIdentifier == -1) {
-            transactionStatus = SessionError()
+            transactionStatus = SessionResponse()
             return@transaction
         }
 
@@ -36,7 +36,7 @@ fun correctGuess(input: String): IError {
             it[User.question_id] = 0
         }
 
-        transactionStatus = NoError(response = mapOf("status" to "Ok"))
+        transactionStatus = NoResponse(response = mapOf("status" to "Ok"))
     }
 
     return transactionStatus

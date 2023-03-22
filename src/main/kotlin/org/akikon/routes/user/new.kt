@@ -1,7 +1,7 @@
 package org.akikon.routes.user
 
 import kotlinx.serialization.decodeFromString
-import org.akikon.errors.*
+import org.akikon.responses.*
 import org.akikon.json.NewSession
 import org.akikon.jsonParser
 import org.akikon.models.User
@@ -11,20 +11,20 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.random.Random
 
-fun newSession(input: String): IError {
+fun newSession(input: String): IResponse {
 
     //Извлечение имени пользователя и проверка длины имени пользователя
     val userInput: NewSession
     try {
         userInput = jsonParser.decodeFromString(input)
     } catch (e: Exception) {
-        return ParseError()
+        return ParseResponse()
     }
 
     //Первичное создание ключа пользовательской сессии
     var sessionKey = CharArray(16) { Random.nextInt(48, 90).toChar() }
 
-    var transactionStatus: IError = DefaultError()
+    var transactionStatus: IResponse = DefaultResponse()
 
     transaction {
 
@@ -42,11 +42,11 @@ fun newSession(input: String): IError {
                 it[question_id] = 0
             }
         } catch (e: Exception) {
-            transactionStatus = UsernameError()
+            transactionStatus = UsernameResponse()
             return@transaction
         }
 
-        transactionStatus = NoError(response = mapOf("session" to String(sessionKey)))
+        transactionStatus = NoResponse(response = mapOf("session" to String(sessionKey)))
     }
 
     return transactionStatus

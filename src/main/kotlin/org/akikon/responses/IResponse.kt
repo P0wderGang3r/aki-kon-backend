@@ -1,6 +1,6 @@
-package org.akikon.errors
+package org.akikon.responses
 
-interface IError {
+interface IResponse {
     val type: Int
     val text: String
     val response: Map<String, String>

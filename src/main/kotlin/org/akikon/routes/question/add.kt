@@ -1,7 +1,7 @@
 package org.akikon.routes.question
 
 import kotlinx.serialization.decodeFromString
-import org.akikon.errors.*
+import org.akikon.responses.*
 import org.akikon.json.GetQuestion
 import org.akikon.jsonParser
 import org.akikon.models.Guess
@@ -10,17 +10,17 @@ import org.akikon.models.User
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun addQuestion(input: String): IError {
+fun addQuestion(input: String): IResponse {
 
     //Извлечение идентификатора пользовательской сессии
     val userInput: GetQuestion
     try {
         userInput = jsonParser.decodeFromString(input)
     } catch (e: Exception) {
-        return ParseError()
+        return ParseResponse()
     }
 
-    var transactionStatus: IError = DefaultError()
+    var transactionStatus: IResponse = DefaultResponse()
 
     transaction {
         //Получаем идентификатор вопроса
@@ -29,7 +29,7 @@ fun addQuestion(input: String): IError {
             questionId = it[User.question_id]
         }
         if (questionId == -1) {
-            transactionStatus = SessionError()
+            transactionStatus = SessionResponse()
             return@transaction
         }
 
@@ -39,7 +39,7 @@ fun addQuestion(input: String): IError {
             currentUsername = it[User.username]
         }
         if (currentUsername == "") {
-            transactionStatus = SessionError()
+            transactionStatus = SessionResponse()
             return@transaction
         }
 
@@ -57,7 +57,7 @@ fun addQuestion(input: String): IError {
                     it[Guess.guess] = userInput.guess
                 }
             } catch (e: Exception) {
-                transactionStatus = GuessError()
+                transactionStatus = GuessResponse()
                 return@transaction
             }
             Guess.select { Guess.guess eq userInput.guess }.forEach {
@@ -85,7 +85,7 @@ fun addQuestion(input: String): IError {
                     newGuessId else prevGuessId
             }[Question.question_id]
         } catch (e: Exception) {
-            transactionStatus = QuestionError()
+            transactionStatus = QuestionResponse()
             return@transaction
         }
 
@@ -104,7 +104,7 @@ fun addQuestion(input: String): IError {
             newQuestionId = it[Question.question_id]
         }
         if (newQuestionId == -1) {
-            transactionStatus = DefaultError()
+            transactionStatus = DefaultResponse()
             return@transaction
         }
 
@@ -121,7 +121,7 @@ fun addQuestion(input: String): IError {
             it[User.question_id] = 0
         }
 
-        transactionStatus = NoError(response = mapOf("status" to "Ok"))
+        transactionStatus = NoResponse(response = mapOf("status" to "Ok"))
     }
 
     return transactionStatus

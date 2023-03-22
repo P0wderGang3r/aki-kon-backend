@@ -1,24 +1,24 @@
 package org.akikon.routes.user
 
 import kotlinx.serialization.decodeFromString
-import org.akikon.errors.*
+import org.akikon.responses.*
 import org.akikon.json.GetSession
 import org.akikon.jsonParser
 import org.akikon.models.User
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun getUsername(input: String): IError {
+fun getUsername(input: String): IResponse {
 
     //Извлечение идентификатора пользовательской сессии
     val userInput: GetSession
     try {
         userInput = jsonParser.decodeFromString(input)
     } catch (e: Exception) {
-        return ParseError()
+        return ParseResponse()
     }
 
-    var transactionStatus: IError = DefaultError()
+    var transactionStatus: IResponse = DefaultResponse()
 
     transaction {
         //Получаем имя пользователя
@@ -27,11 +27,11 @@ fun getUsername(input: String): IError {
             username = it[User.username]
         }
         if (username == "") {
-            transactionStatus = SessionError()
+            transactionStatus = SessionResponse()
             return@transaction
         }
 
-        transactionStatus = NoError(response = mapOf("username" to username))
+        transactionStatus = NoResponse(response = mapOf("username" to username))
     }
 
     return transactionStatus

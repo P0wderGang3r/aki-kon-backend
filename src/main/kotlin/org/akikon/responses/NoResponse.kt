@@ -1,7 +1,7 @@
-package org.akikon.errors
+package org.akikon.responses
 
-class NoError(
+class NoResponse(
     override val type: Int = -1,
     override val text: String = "",
     override val response: Map<String, String>
-) : IError { }
+) : IResponse { }

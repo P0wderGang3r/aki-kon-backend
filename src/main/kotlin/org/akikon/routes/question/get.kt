@@ -1,7 +1,7 @@
 package org.akikon.routes.question
 
 import kotlinx.serialization.decodeFromString
-import org.akikon.errors.*
+import org.akikon.responses.*
 import org.akikon.json.GetSession
 import org.akikon.jsonParser
 import org.akikon.models.Question
@@ -9,17 +9,17 @@ import org.akikon.models.User
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun getQuestion(input: String): IError {
+fun getQuestion(input: String): IResponse {
 
     //Извлечение идентификатора пользовательской сессии
     val userInput: GetSession
     try {
         userInput = jsonParser.decodeFromString(input)
     } catch (e: Exception) {
-        return ParseError()
+        return ParseResponse()
     }
 
-    var transactionStatus: IError = DefaultError()
+    var transactionStatus: IResponse = DefaultResponse()
 
     transaction {
         //Получаем идентификатор вопроса
@@ -28,7 +28,7 @@ fun getQuestion(input: String): IError {
             questionIdentifier = it[User.question_id]
         }
         if (questionIdentifier == -1) {
-            transactionStatus = SessionError()
+            transactionStatus = SessionResponse()
             return@transaction
         }
 
@@ -38,7 +38,7 @@ fun getQuestion(input: String): IError {
             questionText = it[Question.question]
         }
 
-        transactionStatus = NoError(response = mapOf("question" to questionText))
+        transactionStatus = NoResponse(response = mapOf("question" to questionText))
     }
 
     return transactionStatus
