@@ -120,7 +120,7 @@ fun addQuestion(input: String): IResponse {
 
         //Сбрасываем номер вопроса пользователя
         User.update({ User.session eq userInput.session }) {
-            it[User.question_id] = 0
+            it[User.question_id] = 1
         }
 
         transactionStatus = OkResponse(response = mapOf("status" to "Ok"))

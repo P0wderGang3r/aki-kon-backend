@@ -32,8 +32,9 @@ fun correctGuess(input: String): IResponse {
             return@transaction
         }
 
+        //Сбрасываем номер вопроса пользователя
         User.update({ User.session eq userInput.session }) {
-            it[User.question_id] = 0
+            it[User.question_id] = 1
         }
 
         transactionStatus = OkResponse(response = mapOf("status" to "Ok"))

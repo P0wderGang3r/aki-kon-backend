@@ -23,5 +23,3 @@ fun Application.module() {
     configureHTTP()
     configureRouting()
 }
-
-//TODO: автоматическое добавление вопроса по умолчанию
