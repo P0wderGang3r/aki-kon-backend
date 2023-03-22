@@ -47,7 +47,7 @@ fun answerQuestion(input: String): IResponse {
             User.update({ User.session eq userInput.session }) {
                 it[User.question_id] = newQuestionId!!
             }
-            transactionStatus = NoResponse(response = mapOf("answer_type" to "1", "guess" to ""))
+            transactionStatus = OkResponse(response = mapOf("answer_type" to "1", "guess" to ""))
             return@transaction
         }
 
@@ -68,7 +68,7 @@ fun answerQuestion(input: String): IResponse {
             guess = it[Guess.guess]
         }
 
-        transactionStatus = NoResponse(response = mapOf("answer_type" to "0", "guess" to guess))
+        transactionStatus = OkResponse(response = mapOf("answer_type" to "0", "guess" to guess))
     }
 
     return transactionStatus

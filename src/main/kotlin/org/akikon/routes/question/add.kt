@@ -8,6 +8,7 @@ import org.akikon.models.Guess
 import org.akikon.models.Question
 import org.akikon.models.User
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun addQuestion(input: String): IResponse {
@@ -85,6 +86,7 @@ fun addQuestion(input: String): IResponse {
                     newGuessId else prevGuessId
             }[Question.question_id]
         } catch (e: Exception) {
+            Guess.deleteWhere { Guess.guess_id eq newGuessId }
             transactionStatus = QuestionResponse()
             return@transaction
         }
@@ -121,7 +123,7 @@ fun addQuestion(input: String): IResponse {
             it[User.question_id] = 0
         }
 
-        transactionStatus = NoResponse(response = mapOf("status" to "Ok"))
+        transactionStatus = OkResponse(response = mapOf("status" to "Ok"))
     }
 
     return transactionStatus

@@ -38,7 +38,7 @@ fun getQuestion(input: String): IResponse {
             questionText = it[Question.question]
         }
 
-        transactionStatus = NoResponse(response = mapOf("question" to questionText))
+        transactionStatus = OkResponse(response = mapOf("question" to questionText))
     }
 
     return transactionStatus

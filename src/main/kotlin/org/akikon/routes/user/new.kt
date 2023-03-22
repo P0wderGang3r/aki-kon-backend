@@ -46,7 +46,7 @@ fun newSession(input: String): IResponse {
             return@transaction
         }
 
-        transactionStatus = NoResponse(response = mapOf("session" to String(sessionKey)))
+        transactionStatus = OkResponse(response = mapOf("session" to String(sessionKey)))
     }
 
     return transactionStatus

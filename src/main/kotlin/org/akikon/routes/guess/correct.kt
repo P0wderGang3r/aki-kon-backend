@@ -36,7 +36,7 @@ fun correctGuess(input: String): IResponse {
             it[User.question_id] = 0
         }
 
-        transactionStatus = NoResponse(response = mapOf("status" to "Ok"))
+        transactionStatus = OkResponse(response = mapOf("status" to "Ok"))
     }
 
     return transactionStatus

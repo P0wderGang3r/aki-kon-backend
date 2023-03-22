@@ -24,5 +24,4 @@ fun Application.module() {
     configureRouting()
 }
 
-//TODO: откат изменений в случае ошибки
 //TODO: автоматическое добавление вопроса по умолчанию

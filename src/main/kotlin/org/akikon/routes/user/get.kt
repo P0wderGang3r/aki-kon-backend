@@ -31,7 +31,7 @@ fun getUsername(input: String): IResponse {
             return@transaction
         }
 
-        transactionStatus = NoResponse(response = mapOf("username" to username))
+        transactionStatus = OkResponse(response = mapOf("username" to username))
     }
 
     return transactionStatus
