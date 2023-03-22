@@ -39,7 +39,7 @@ fun newSession(input: String): IResponse {
             User.insert {
                 it[username] = userInput.username
                 it[session] = String(sessionKey)
-                it[question_id] = 0
+                it[question_id] = 1
             }
         } catch (e: Exception) {
             transactionStatus = UsernameResponse()
